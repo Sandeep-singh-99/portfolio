@@ -1,4 +1,4 @@
-"use client";
+'use client'
 import Link from "next/link";
 import React, { useState } from "react";
 
@@ -12,7 +12,9 @@ function NavBar() {
   return (
     <div className="bg-gray-950 shadow-lg text-white sticky top-0 z-50">
       <div className="flex justify-between items-center px-5 md:px-10 py-3">
-        <h1 className="text-3xl  font-semibold">Sandeep</h1>
+        <Link href={"/"} className="text-3xl font-semibold">
+          Sandeep
+        </Link>
 
         {/* Mobile Menu */}
         <div className="md:hidden">
@@ -54,35 +56,35 @@ function NavBar() {
 
           {/* Mobile Menu Dropdown */}
           {isMobileMenuOpen && (
-            <div className="bg-slate-900 absolute top-16 right-0 w-44 z-50 py-2 rounded-md shadow-lg">
+            <div className="bg-[#2b2f33] absolute top-16 right-0 w-44 z-50 py-2 rounded-md shadow-lg">
               <div className="flex flex-col items-center space-y-4 px-2 py-2">
                 <Link
                   className="hover:bg-blue-600 hover:w-full text-center px-4 py-2 rounded-md"
-                  href={"/"}
+                  href="#profile"
                 >
                   Home
                 </Link>
                 <Link
                   className="hover:bg-blue-600 hover:w-full text-center px-4 py-2 rounded-md"
-                  href={"about"}
+                  href="#about"
                 >
                   About
                 </Link>
                 <Link
                   className="hover:bg-blue-600 hover:w-full text-center px-4 py-2 rounded-md"
-                  href={"skill"}
+                  href="#skill"
                 >
                   Skills
                 </Link>
                 <Link
                   className="hover:bg-blue-600 hover:w-full text-center px-4 py-2 rounded-md"
-                  href={"project"}
+                  href="#project"
                 >
                   Projects
                 </Link>
                 <Link
                   className="hover:bg-blue-600 hover:w-full text-center px-4 py-2 rounded-md"
-                  href={""}
+                  href="#contact"
                 >
                   Contact
                 </Link>
@@ -93,28 +95,28 @@ function NavBar() {
 
         {/* Desktop Menu */}
         <div className="space-x-5 sm:space-x-3 hidden md:flex justify-center items-center">
-          <Link className="hover:bg-blue-600 px-2 rounded-md py-2" href={"/"}>
+          <Link className="hover:bg-blue-600 px-2 rounded-md py-2" href="#profile">
             Home
           </Link>
           <Link
             className="hover:bg-blue-600 px-2 rounded-md py-2"
-            href={"about"}
+            href="#about"
           >
             About
           </Link>
           <Link
             className="hover:bg-blue-600 px-2 rounded-md py-2"
-            href={"skill"}
+            href="#skill"
           >
             Skills
           </Link>
           <Link
             className="hover:bg-blue-600 px-2 rounded-md py-2"
-            href={"project"}
+            href="#project"
           >
             Projects
           </Link>
-          <Link className="hover:bg-blue-600 px-2 rounded-md py-2" href={""}>
+          <Link className="hover:bg-blue-600 px-2 rounded-md py-2" href="#contact">
             Contact
           </Link>
         </div>
