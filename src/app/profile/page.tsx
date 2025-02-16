@@ -1,7 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
+import Aos from "aos";
+import "aos/dist/aos.css";
 
 export default function Profile() {
+  useEffect(() => {
+    Aos.init({ duration: 1000 }); // Initialize AOS animation
+  }, []);
+
   return (
     <div style={{ position: "relative", height: "100vh" }}>
       {/* Set image as a background */}
@@ -12,21 +19,24 @@ export default function Profile() {
           left: 0,
           width: "100%",
           height: "100%",
-          zIndex: -1, // Ensures the image stays in the background
+          zIndex: -1,
         }}
       >
         <Image
           src="/img.jpg"
           alt="background image"
-          layout="fill" // Fills the entire container
-          objectFit="cover" // Ensures the image covers the full area without distortion
+          layout="fill"
+          objectFit="cover"
           quality={100}
         />
       </div>
 
-      {/* Your content goes here */}
+      {/* Your content */}
       <div style={{ position: "relative", zIndex: 1 }}>
-        <div className="flex md:justify-evenly flex-col md:flex-row justify-center gap-16 items-center h-screen">
+        <div
+          className="flex md:justify-evenly flex-col md:flex-row justify-center gap-16 items-center h-screen"
+          data-aos="fade-up" // Apply scroll animation
+        >
           <div>
             <h1 className="text-3xl font-semibold">Hi, I am Sandeep Singh</h1>
             <h1 className="text-xl font-semibold">Web Developer</h1>
@@ -47,6 +57,7 @@ export default function Profile() {
               width={500}
               height={500}
               quality={100}
+              data-aos="fade-left" // Add fade-left animation
             />
           </div>
         </div>

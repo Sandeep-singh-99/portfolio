@@ -2,7 +2,7 @@ import React from "react";
 
 function Contact() {
   return (
-    <div className="px-5 md:px-32 py-10">
+    <div className="px-5 md:px-32 py-10" data-aos="fade-up">
       <div className="flex flex-col justify-center gap-5 items-center h-fit">
         <h1 className="text-4xl text-center font-semibold">
           Let's Get In Touch
@@ -23,12 +23,14 @@ function Contact() {
           >
             LinkedIn
           </a>
-
           <a
-            href="https://twitter.com/Abhisheksingh_0" target="_blank" rel="noreferrer" className="text-2xl">
+            href="https://twitter.com/Abhisheksingh_0"
+            target="_blank"
+            rel="noreferrer"
+            className="text-2xl"
+          >
             Twitter
           </a>
-
         </div>
       </div>
     </div>
