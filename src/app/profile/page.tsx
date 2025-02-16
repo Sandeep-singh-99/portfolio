@@ -10,7 +10,7 @@ export default function Profile() {
   }, []);
 
   return (
-    <div style={{ position: "relative", height: "100vh" }}>
+    <div style={{ position: "relative", height: "100vh" }}> 
       {/* Set image as a background */}
       <div
         style={{
@@ -19,7 +19,7 @@ export default function Profile() {
           left: 0,
           width: "100%",
           height: "100%",
-          zIndex: -1,
+          zIndex: -10,
         }}
       >
         <Image
