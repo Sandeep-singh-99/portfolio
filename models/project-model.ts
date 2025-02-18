@@ -16,6 +16,11 @@ const projectSchema = new Schema({
         required: true
     },
 
+    technologyUsed: {
+        type: [String],
+        required: true
+    },
+
     cloudinaryId: {
         type: String,
         required: true
