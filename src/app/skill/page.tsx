@@ -83,7 +83,7 @@ const Skill = () => {
       opacity: 1,
       transition: {
         staggerChildren: 0.2,
-        delayChildren: 0.2,
+        delayChildren: 0.15,
       },
     },
   };
@@ -122,7 +122,7 @@ const Skill = () => {
               key={index}
               variants={item}
               whileHover="whileHover"
-              className="flex flex-col items-center p-4 rounded-lg bg-white shadow-md"
+              className="flex flex-col justify-center items-center p-4 rounded-lg bg-white shadow-md"
               data-aos="fade-up"
               data-aos-delay="100"
             >
@@ -133,7 +133,7 @@ const Skill = () => {
                 height={60}
                 className="mb-2"
               />
-              <p className="text-center font-medium">{skill.name}</p>
+              <p className="text-center text-black font-medium">{skill.name}</p>
             </motion.div>
           ))}
         </motion.div>

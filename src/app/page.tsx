@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect } from "react";
-import Profile from "./profile/page";
+import Profile from "./hero/page";
 import About from "./about/page";
 import Skill from "./skill/page";
 import Project from "./project/page";
@@ -12,7 +12,7 @@ import Aos from "aos";
 
 export default function Home() {
   useEffect(() => {
-    Aos.init({ duration: 1000, once: true });
+    Aos.init({ duration: 1000 });
   }, []);
   return (
     <div>

@@ -11,7 +11,7 @@ function NavBar() {
   };
 
   const navLinks = [
-    { href: "#home", label: "Home" },
+    { href: "#hero", label: "Home" },
     { href: "#about", label: "About" },
     { href: "#skill", label: "Skills" },
     { href: "#project", label: "Projects" },
