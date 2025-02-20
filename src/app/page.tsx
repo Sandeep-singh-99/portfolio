@@ -12,7 +12,7 @@ import Aos from "aos";
 
 export default function Home() {
   useEffect(() => {
-    Aos.init({ duration: 1000 });
+    Aos.init({ duration: 1000, once: true });
   }, []);
   return (
     <div>

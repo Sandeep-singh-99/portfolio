@@ -1,5 +1,7 @@
 import React from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
+
 const skillImage = [
   {
     name: "React",
@@ -74,30 +76,70 @@ const skillImage = [
     src: "https://cdn.worldvectorlogo.com/logos/material-ui-1.svg",
   },
 ];
+const Skill = () => {
+  const container = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: 0.2,
+      },
+    },
+  };
 
-function Skill() {
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 10,
+      },
+    },
+    whileHover: {
+      scale: 1.1,
+      y: -10,
+      transition: { duration: 0.5 },
+    },
+  };
+
   return (
-    <div className="py-10 px-5 md:px-32">
+    <div className="py-10 px-5 md:px-32 overflow-hidden">
       <div className="flex flex-col gap-10">
-        <h1 className="text-4xl font-semibold text-center">Skill</h1>
-        <div data-aos="fade-up">
-          <div className="grid grid-cols-2 md:grid-cols-3 items-center space-y-3 lg:grid-cols-6 gap-5">
-            {skillImage.map((skill, index) => (
-              <div key={index} className="flex items-center flex-col">
-                <Image
-                  src={skill.src}
-                  alt={skill.name}
-                  width={40}
-                  height={40}
-                />
-                <p className="text-center">{skill.name}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+        <h1 className="text-4xl font-semibold text-center mb-6">Skills</h1>
+
+        <motion.div
+          variants={container}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6"
+        >
+          {skillImage.map((skill, index) => (
+            <motion.div
+              key={index}
+              variants={item}
+              whileHover="whileHover"
+              className="flex flex-col items-center p-4 rounded-lg bg-white shadow-md"
+              data-aos="fade-up"
+              data-aos-delay="100"
+            >
+              <Image
+                src={skill.src}
+                alt={skill.name}
+                width={60}
+                height={60}
+                className="mb-2"
+              />
+              <p className="text-center font-medium">{skill.name}</p>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
     </div>
   );
-}
+};
 
 export default Skill;

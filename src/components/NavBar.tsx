@@ -1,6 +1,7 @@
-'use client'
+"use client";
 import Link from "next/link";
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 
 function NavBar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -9,119 +10,95 @@ function NavBar() {
     setIsMobileMenuOpen((prev) => !prev);
   };
 
+  const navLinks = [
+    { href: "#home", label: "Home" },
+    { href: "#about", label: "About" },
+    { href: "#skill", label: "Skills" },
+    { href: "#project", label: "Projects" },
+    { href: "#contact", label: "Contact" },
+  ];
+
   return (
-    <div className="bg-gray-950 shadow-lg text-white sticky top-0 z-50">
+    <nav className="bg-gray-950 shadow-lg text-white sticky top-0 z-50 transition-all duration-300">
       <div className="flex justify-between items-center px-5 md:px-10 py-3">
-        <Link href={"/"} className="text-3xl font-semibold">
+        <Link href="/" className="text-3xl font-semibold">
           Sandeep
         </Link>
 
         {/* Mobile Menu */}
         <div className="md:hidden">
-          {/* Hamburger icon when menu is closed */}
-          {!isMobileMenuOpen ? (
-            <svg
-              onClick={toggleMobileMenu} // Toggle mobile menu
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 cursor-pointer"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16m-7 6h7"
-              />
-            </svg>
-          ) : (
-            // "X" icon when menu is open
-            <svg
-              onClick={toggleMobileMenu} // Close the mobile menu
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 cursor-pointer"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          )}
+          <button onClick={toggleMobileMenu} className="focus:outline-none">
+            {isMobileMenuOpen ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16m-7 6h7"
+                />
+              </svg>
+            )}
+          </button>
 
-          {/* Mobile Menu Dropdown */}
           {isMobileMenuOpen && (
-            <div className="bg-[#2b2f33] absolute top-16 right-0 w-44 z-50 py-2 rounded-md shadow-lg">
-              <div className="flex flex-col items-center space-y-4 px-2 py-2">
-                <Link
-                  className="hover:bg-blue-600 hover:w-full text-center px-4 py-2 rounded-md"
-                  href="#profile"
-                >
-                  Home
-                </Link>
-                <Link
-                  className="hover:bg-blue-600 hover:w-full text-center px-4 py-2 rounded-md"
-                  href="#about"
-                >
-                  About
-                </Link>
-                <Link
-                  className="hover:bg-blue-600 hover:w-full text-center px-4 py-2 rounded-md"
-                  href="#skill"
-                >
-                  Skills
-                </Link>
-                <Link
-                  className="hover:bg-blue-600 hover:w-full text-center px-4 py-2 rounded-md"
-                  href="#project"
-                >
-                  Projects
-                </Link>
-                <Link
-                  className="hover:bg-blue-600 hover:w-full text-center px-4 py-2 rounded-md"
-                  href="#contact"
-                >
-                  Contact
-                </Link>
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+              className="bg-[#2b2f33] absolute top-16 right-0 w-44 z-50 py-2 rounded-md shadow-lg"
+            >
+              <div className="flex flex-col items-center space-y-2 px-2 py-2">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="hover:bg-blue-600 w-full text-center px-4 py-2 rounded-md transition-colors duration-300"
+                    onClick={toggleMobileMenu}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
               </div>
-            </div>
+            </motion.div>
           )}
         </div>
 
         {/* Desktop Menu */}
-        <div className="space-x-5 sm:space-x-3 hidden md:flex justify-center items-center">
-          <Link className="hover:bg-blue-600 px-2 rounded-md py-2" href="#profile">
-            Home
-          </Link>
-          <Link
-            className="hover:bg-blue-600 px-2 rounded-md py-2"
-            href="#about"
-          >
-            About
-          </Link>
-          <Link
-            className="hover:bg-blue-600 px-2 rounded-md py-2"
-            href="#skill"
-          >
-            Skills
-          </Link>
-          <Link
-            className="hover:bg-blue-600 px-2 rounded-md py-2"
-            href="#project"
-          >
-            Projects
-          </Link>
-          <Link className="hover:bg-blue-600 px-2 rounded-md py-2" href="#contact">
-            Contact
-          </Link>
+        <div className="hidden md:flex space-x-5">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="hover:bg-blue-600 px-4 py-2 rounded-md transition-colors duration-300"
+            >
+              {link.label}
+            </Link>
+          ))}
         </div>
       </div>
-    </div>
+    </nav>
   );
 }
 
