@@ -3,37 +3,39 @@ import SkillModel from "../../../../../../models/skill-model";
 import { ConnectDB } from "../../../../../../lib/db";
 import { UploadImage } from "../../../../../../lib/upload_image";
 
-export async function DELETE({ params }: { params: { id: string } }) {
-    await ConnectDB();
+export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+  await ConnectDB();
   try {
     const { id } = params;
-    await SkillModel.findByIdAndDelete(id);
+    const { imageUrl } = await req.json();  // Get the image URL from request body
 
+    const skill = await SkillModel.findById(id);
+    if (!skill) {
+      return NextResponse.json({ message: "Skill section not found" }, { status: 404 });
+    }
+
+    // Filter out the image from skillImages
+    skill.skillImages = skill.skillImages.filter(img => img.skillImage !== imageUrl);
+
+    if (skill.skillImages.length === 0) {
+      // If no images are left, delete the entire document
+      await SkillModel.findByIdAndDelete(id);
+      return NextResponse.json(
+        { message: "Skill section deleted since no images were left" },
+        { status: 200 }
+      );
+    }
+
+    await skill.save(); // Save updated document with remaining images
     return NextResponse.json(
-      { message: "Skill section deleted successfully" },
+      { message: "Image deleted successfully" },
       { status: 200 }
     );
+
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
 
-export async function PUT(req: NextRequest, {params}: { params: { id: string } }) {
-    await ConnectDB();
-    try {
-        const { id } = params;
 
-        const formData = await req.formData();
-
-        const skillImage = formData.get("skillImage") as File;
-
-        const skillImageResult: any = await UploadImage(skillImage, "skill");
-
-        await SkillModel.findByIdAndUpdate(id, {skillImage: skillImageResult.secure_url, cloudinaryId: skillImageResult.public_id});
-
-        return NextResponse.json({ message: "Skill section updated successfully" }, { status: 200 });
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-}

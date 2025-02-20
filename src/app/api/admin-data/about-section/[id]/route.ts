@@ -6,6 +6,12 @@ export async function DELETE({ params }: { params: { id: string } }) {
     await ConnectDB();
     try {
         const { id } = params;
+
+        const existingData = await AboutModel.findById(id);
+
+        if (!existingData) {
+            return NextResponse.json({ error: "Data not found" }, { status: 404 });
+        }
         await AboutModel.findByIdAndDelete(id)
 
         return NextResponse.json({ success: "successfully deleted" }, { status: 200 });
@@ -18,7 +24,9 @@ export async function PUT(req: NextRequest, {params}: {params: {id: string}}) {
     await ConnectDB();
     try {
         const { id } = params;
-        const { description } = await req.json()
+        const formData = await req.formData();
+
+        const description = formData.get('description') as string;
 
         if (!description) {
             throw new Error('Description is required');

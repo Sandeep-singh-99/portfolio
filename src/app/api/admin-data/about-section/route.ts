@@ -5,7 +5,9 @@ import AboutModel from "../../../../../models/about-model";
 export async function POST(req: NextRequest) {
     await ConnectDB();
     try {
-        const { description } = await req.json()
+        const formData = await req.formData();
+
+        const description = formData.get('description') as string;
 
         if (!description) {
             throw new Error('Description is required');

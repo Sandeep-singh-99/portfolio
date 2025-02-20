@@ -34,9 +34,7 @@ function AdminLogin() {
     const token = localStorage.getItem("token");
     if (token) {
       router.push("/admin-portal");
-    } else {
-      router.push("/admin-login");
-    }
+    } 
   },[router])
   
   return (
