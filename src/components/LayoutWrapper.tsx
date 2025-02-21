@@ -11,7 +11,7 @@ export default function LayoutWrapper({
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 6000); // Hide splash screen after 4s
+    const timer = setTimeout(() => setIsLoading(false), 6000); 
     return () => clearTimeout(timer);
   }, []);
 
