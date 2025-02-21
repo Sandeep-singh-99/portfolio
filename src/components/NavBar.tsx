@@ -67,34 +67,49 @@ function NavBar() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
-              className="bg-[#2b2f33] absolute top-16 right-0 w-44 z-50 py-2 rounded-md shadow-lg"
+              className="bg-gray-800 bg-opacity-90 absolute top-16 right-0 w-44 z-50 py-2 rounded-md shadow-lg backdrop-blur-lg"
             >
-              <div className="flex flex-col items-center space-y-2 px-2 py-2">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="flex flex-col items-center space-y-3 px-2 py-2"
+              >
                 {navLinks.map((link) => (
-                  <Link
+                  <motion.div
                     key={link.href}
-                    href={link.href}
-                    className="hover:bg-blue-600 w-full text-center px-4 py-2 rounded-md transition-colors duration-300"
-                    onClick={toggleMobileMenu}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
                   >
-                    {link.label}
-                  </Link>
+                    <Link
+                      href={link.href}
+                      className="hover:bg-blue-600 w-full text-center px-4 py-2 rounded-md transition-colors duration-300"
+                      onClick={toggleMobileMenu}
+                    >
+                      {link.label}
+                    </Link>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             </motion.div>
           )}
         </div>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex space-x-5">
+        <div className="hidden md:flex space-x-3">
           {navLinks.map((link) => (
-            <Link
+            <motion.div
               key={link.href}
-              href={link.href}
-              className="hover:bg-blue-600 px-4 py-2 rounded-md transition-colors duration-300"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
             >
-              {link.label}
-            </Link>
+              <Link
+                href={link.href}
+                className="hover:bg-blue-600 px-4 py-2 rounded-md transition-colors duration-300"
+              >
+                {link.label}
+              </Link>
+            </motion.div>
           ))}
         </div>
       </div>
