@@ -1,16 +1,28 @@
 import { Button, Form, Upload, Modal, Spin, Card, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
+import Image from "next/image";
+
+interface SkillImage {
+  skillImage: string;
+}
+
+interface Skill {
+  _id: string;
+  skillName: string;
+  skillImages: SkillImage[];
+}
+
 
 function AdminSkillComponent() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [skillsData, setSkillsData] = useState<any>([]);
+  const [skillsData, setSkillsData] = useState<Skill[]>([]);
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
   const [form] = Form.useForm();
 
   // Show modal with or without editing
-  const showModal = (item: any = null) => {
+  const showModal = (item: Skill | null = null) => {
     setIsModalVisible(true);
     if (item) {
       form.setFieldsValue({ images: item.skillImages });
@@ -36,7 +48,7 @@ function AdminSkillComponent() {
     fetchData();
   }, []);
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async (values: { images?: { fileList?: File[] } }) => {
     setLoading(true);
     const formData = new FormData();
 
@@ -86,7 +98,7 @@ function AdminSkillComponent() {
           .map((skill) => {
             if (skill._id === skillId) {
               const updatedImages = skill.skillImages.filter(
-                (image: any) => image.skillImage !== imageUrl
+                (image: SkillImage) => image.skillImage !== imageUrl
               );
               return { ...skill, skillImages: updatedImages };
             }
@@ -99,8 +111,8 @@ function AdminSkillComponent() {
       } else {
         message.error("Failed to delete image!");
       }
-    } catch (error) {
-      message.error("An error occurred while deleting the image.");
+    } catch (error: any) {
+      message.error("An error occurred while deleting the image.", error);
     }
   
     setDeleteLoading(null); 
@@ -113,7 +125,7 @@ function AdminSkillComponent() {
     form.resetFields();
   };
 
-  const beforeUpload = (file: any) => {
+  const beforeUpload = (file: File) => {
     const isImage = file.type.startsWith("image/");
     if (!isImage) {
       message.error("You can only upload image files!");
@@ -141,7 +153,7 @@ function AdminSkillComponent() {
             <Spin size="large" className="text-blue-500" />
           </div>
         ) : skillsData.length > 0 ? (
-          skillsData.map((item: any, index: number) => (
+          skillsData.map((item: Skill, index: number) => (
             <Card
               key={index}
               bordered={false}
@@ -151,8 +163,10 @@ function AdminSkillComponent() {
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                   {item.skillImages.map((image: any, idx: number) => (
                     <div key={idx} className="relative">
-                      <img
+                      <Image
                         src={image.skillImage}
+                        width={128}
+                        height={128}
                         alt="Skill"
                         className="w-full h-32 object-cover rounded-lg border-2 border-gray-200 shadow-sm hover:opacity-80 transition-all"
                       />
