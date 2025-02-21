@@ -3,7 +3,7 @@ import { ConnectDB } from "../../../../../lib/db";
 import { UploadImage } from "../../../../../lib/upload_image";
 import ProjectModel from "../../../../../models/project-model";
 
-export async function post(req: NextRequest) {
+export async function POST(req: NextRequest) {
   await ConnectDB();
   try {
     const formData = await req.formData();
@@ -11,7 +11,7 @@ export async function post(req: NextRequest) {
     const projectName = formData.get("projectName") as string;
     const projectDescription = formData.get("projectDescription") as string;
     const projectImage = formData.get("projectImage") as File;
-    const technologyUsed = formData.getAll("technologyUsed") as string[];
+    const technologyUsed = formData.get("technologyUsed") as string
     const projectUrl = formData.get("projectUrl") as string;
 
     const productImageResult: any = await UploadImage(projectImage, "project");
@@ -24,6 +24,11 @@ export async function post(req: NextRequest) {
       cloudinaryId: productImageResult.public_id,
       projectUrl,
     });
+
+    return NextResponse.json(
+      { message: "Project added successfully" },
+      { status: 201 }
+    );
   } catch (error: any) {
     return NextResponse.json({ message: error.message }, { status: 500 });
   }

@@ -152,7 +152,7 @@ function AdminHomeComponent() {
                     {item.name}
                   </h2>
                   <p className="text-gray-700 my-2 text-sm">
-                    <strong className="text-gray-800">Tech Stack:</strong>{" "}
+                    <strong className="text-gray-800">Tech Stack:</strong>
                     {item.techStack?.join(", ")}
                   </p>
                   <p className="text-gray-600 text-sm mb-4">
@@ -213,6 +213,7 @@ function AdminHomeComponent() {
           <Form.Item label="Name" name="name" rules={[{ required: true }]}>
             <Input placeholder="Enter name" />
           </Form.Item>
+
           <Form.Item
             label="Tech Stack"
             name="techStack"
@@ -224,6 +225,7 @@ function AdminHomeComponent() {
               tokenSeparators={[","]}
             />
           </Form.Item>
+          
           <Form.Item
             label="Description"
             name="description"

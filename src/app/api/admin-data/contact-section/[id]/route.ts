@@ -3,39 +3,56 @@ import { ConnectDB } from "../../../../../../lib/db";
 import ContactModel from "../../../../../../models/contact-model";
 import { UploadImage } from "../../../../../../lib/upload_image";
 
-export async function DELETE({params}: {params: {id: string}}) {
+
+
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
     await ConnectDB();
     try {
-        const { id } = params;
+        const id = params?.id; 
+
+        if (!id) {
+            return NextResponse.json({ error: "Missing contact ID" }, { status: 400 });
+        }
+
+        const contact = await ContactModel.findById(id);
+        if (!contact) {
+            return NextResponse.json({ error: "Contact section not found" }, { status: 404 });
+        }
+
         await ContactModel.findByIdAndDelete(id);
 
-        return NextResponse.json({ message: 'Contact section deleted successfully' }, { status: 200 });
+        return NextResponse.json({ message: "Contact section deleted successfully" }, { status: 200 });
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
 
 
-export async function PUT(req: NextRequest, {params}: {params: {id: string}}) {
+export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
     await ConnectDB();
     try {
         const { id } = params;
-
         const formData = await req.formData();
 
-        const url = formData.get('url') as string;
-        const image = formData.get('image') as File;
-       
+        const url = formData.get("url") as string;
+        const image = formData.get("image") as File | null; // ✅ Image may be null
 
-        if (!url || !image) {
-            return NextResponse.json({ error: 'Please fill all fields' }, { status: 400 });
+        if (!url) {
+            return NextResponse.json({ error: "Please fill all fields" }, { status: 400 });
         }
 
-        const contactImage: any = await UploadImage(image, "contact");
+        let updatedData: any = { url };
 
-        await ContactModel.findByIdAndUpdate(id, { url, image: contactImage.secure_url, cloudinaryId: contactImage.public_id });
+        // ✅ Only upload a new image if provided
+        if (image) {
+            const contactImage: any = await UploadImage(image, "contact");
+            updatedData.image = contactImage.secure_url;
+            updatedData.cloudinaryId = contactImage.public_id;
+        }
 
-        return NextResponse.json({ message: 'Contact section updated successfully' }, { status: 200 });
+        await ContactModel.findByIdAndUpdate(id, updatedData);
+
+        return NextResponse.json({ message: "Contact section updated successfully" }, { status: 200 });
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }

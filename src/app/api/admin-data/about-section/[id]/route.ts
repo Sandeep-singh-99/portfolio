@@ -2,10 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { ConnectDB } from "../../../../../../lib/db";
 import AboutModel from "../../../../../../models/about-model";
 
-export async function DELETE({ params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest,{ params }: { params: { id: string } }) {
     await ConnectDB();
     try {
-        const { id } = params;
+        const  id  = params?.id;
+
+        if (!id) {
+            return NextResponse.json({ error: "Missing ID" }, { status: 400 });
+        }
 
         const existingData = await AboutModel.findById(id);
 
