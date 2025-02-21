@@ -3,8 +3,8 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 function AdminLogin() {
-  const [username, setUserName] = useState<String>("");
-  const [password, setPassword] = useState<String>("");
+  const [username, setUserName] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
   const router = useRouter();
 
