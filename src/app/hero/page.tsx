@@ -36,7 +36,11 @@ export default function Hero() {
   }, []);
 
   if (!homeData) {
-    return <div>Loading...</div>;
+    return (
+      <div className="h-screen flex items-center justify-center text-white">
+        Loading...
+      </div>
+    );
   }
 
   return (
@@ -72,7 +76,7 @@ export default function Hero() {
             Hi, I am <span className="text-blue-400">{homeData.name}</span>
           </h1>
 
-          <h2 className="text-3xl text-blue-400 font-semibold mb-4">
+          <h2 className="text-3xl text-blue-400 font-semibold mb-5 md:mb-10">
             <Typewriter
               options={{
                 strings: homeData.techStack[0].split(","),
