@@ -134,9 +134,9 @@ function AdminContactComponent() {
           </div>
         ) : contact.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {contact.map((item: any, index: number) => (
+            {contact.map((item: any) => (
               <Card
-                key={index}
+                key={item._id}
                 hoverable
                 className="shadow-lg rounded-lg"
                 cover={

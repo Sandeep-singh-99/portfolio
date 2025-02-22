@@ -35,15 +35,15 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
         const formData = await req.formData();
 
         const url = formData.get("url") as string;
-        const image = formData.get("image") as File | null; // ✅ Image may be null
+        const image = formData.get("image") as File | null; 
 
         if (!url) {
             return NextResponse.json({ error: "Please fill all fields" }, { status: 400 });
         }
 
-        let updatedData: any = { url };
+        const updatedData: any = { url };
 
-        // ✅ Only upload a new image if provided
+        
         if (image) {
             const contactImage: any = await UploadImage(image, "contact");
             updatedData.image = contactImage.secure_url;

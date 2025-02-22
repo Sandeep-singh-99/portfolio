@@ -1,13 +1,24 @@
 import { Button, Form, Input, Upload, Modal, Select, Card, Spin } from "antd";
 import React, { useEffect, useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
+import Image from "next/image";
+import { UploadFile } from "antd/es/upload/interface";
+
+interface HomeData {
+  _id: string;
+  name: string;
+  techStack: string[];
+  description: string;
+  profileImage: string;
+  resumeFile: string;
+}
 
 function AdminHomeComponent() {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [editingItem, setEditingItem] = useState<any>(null);
-  const [profileImage, setProfileImage] = useState<any>([]);
-  const [resumeFile, setResumeFile] = useState<any>([]);
-  const [homeData, setHomeData] = useState<any>([]);
+  const [editingItem, setEditingItem] = useState<HomeData | null>(null);
+  const [profileImage, setProfileImage] = useState<File[]>([]);
+  const [resumeFile, setResumeFile] = useState<File[]>([]);
+  const [homeData, setHomeData] = useState<HomeData[]>([]);
   const [loading, setLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
   const [form] = Form.useForm();
@@ -30,7 +41,7 @@ function AdminHomeComponent() {
   }, []);
 
   // Show modal (for add/update)
-  const showModal = (item: any = null) => {
+  const showModal = (item: HomeData | null = null) => {
     setEditingItem(item);
     setIsModalVisible(true);
     if (item) {
@@ -102,17 +113,36 @@ function AdminHomeComponent() {
   };
 
   // Handle file changes
-  const handleResumeChange = (info: any) => {
-    if (info.file.type !== "application/pdf") {
-      alert("Only PDF files are allowed!");
-      return;
-    }
-    setResumeFile(info.fileList.map((file: any) => file.originFileObj));
+  // const handleResumeChange = (info: {fileList: File[]}) => {
+  //   if (info.file.type !== "application/pdf") {
+  //     alert("Only PDF files are allowed!");
+  //     return;
+  //   }
+  //   setResumeFile(info.fileList.map((file: any) => file.originFileObj));
+  // };
+
+  // const handleProfileChange = (info: {fileList: File[]}) => {
+  //   setProfileImage(info.fileList.map((file: any) => file.originFileObj));
+  // };
+
+  const handleProfileChange = (info: { fileList: UploadFile[] }) => {
+    setProfileImage(info.fileList.map((f) => f.originFileObj as File));
   };
 
-  const handleProfileChange = (info: any) => {
-    setProfileImage(info.fileList.map((file: any) => file.originFileObj));
-  };
+
+
+const handleResumeChange = (info: { fileList: UploadFile[] }) => {
+  const file = info.fileList[0]?.originFileObj as File; // Ensure correct type
+
+  if (file && file.type !== "application/pdf") {
+    alert("Only PDF files are allowed!");
+    return;
+  }
+
+  setResumeFile(info.fileList.map((f) => f.originFileObj as File));
+};
+
+  
 
   return (
     <div className="p-6">
@@ -141,10 +171,12 @@ function AdminHomeComponent() {
             >
               <div className="flex flex-col md:flex-row items-center md:items-start gap-6 w-full">
                 <div className="flex-shrink-0 w-full md:w-40 h-40 rounded-xl overflow-hidden border-4 border-gray-200">
-                  <img
+                  <Image
                     src={item.profileImage || "/fallback-image.jpg"}
                     alt="Profile"
-                    className="w-full h-full object-cover"
+                    width={160}
+                    height={160}
+                    className="rounded-xl object-cover"
                   />
                 </div>
                 <div className="flex-1 w-full">
@@ -225,7 +257,7 @@ function AdminHomeComponent() {
               tokenSeparators={[","]}
             />
           </Form.Item>
-          
+
           <Form.Item
             label="Description"
             name="description"

@@ -1,6 +1,6 @@
 'use client'
 import { useRouter } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Tabs } from 'antd'
 import AdminHomeComponent from '@/components/AdminHomeComponent'
 import AdminAboutComponent from '@/components/AdminAboutComponent'
@@ -9,7 +9,6 @@ import AdminProjectsComponent from '@/components/AdminProjectsComponent'
 import AdminContactComponent from '@/components/AdminContactComponent'
 
 function Admin() {
-  const [mode, setMode] = useState<'top' | 'left' | 'right' | 'bottom'>('top')
   const router = useRouter()
 
   useEffect(() => {
@@ -32,7 +31,7 @@ function Admin() {
       <div className="w-full max-w-5xl bg-white shadow-lg rounded-xl p-4">
         <Tabs
           defaultActiveKey="0"
-          tabPosition={mode}
+          tabPosition="top"
           items={tabItems}
           centered
           tabBarStyle={{
