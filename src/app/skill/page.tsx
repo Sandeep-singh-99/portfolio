@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -59,6 +60,7 @@ const Skill = () => {
 
         {skillData.map((skill) => (
           <motion.div
+            key={skill._id}
             variants={container}
             initial="hidden"
             animate="visible"
