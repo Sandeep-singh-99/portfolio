@@ -14,7 +14,7 @@ function Project() {
         >
           <div className="relative w-full h-[60%]">
             <Image
-              src="https://images.pexels.com/photos/29343550/pexels-photo-29343550/free-photo-of-scenic-mountain-road-in-majestic-forest-landscape.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+              src=""
               alt="banner"
               layout="fill"
               objectFit="cover"

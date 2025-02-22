@@ -13,21 +13,33 @@ export async function DELETE(
     const id = resolvedParams.id;
 
     if (!id) {
-      return NextResponse.json({ error: "Missing contact ID" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing contact ID" },
+        { status: 400 }
+      );
     }
 
     const contact = await HomeModel.findById(id);
     if (!contact) {
-      return NextResponse.json({ error: "Contact section not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Contact section not found" },
+        { status: 404 }
+      );
     }
 
     await HomeModel.findByIdAndDelete(id);
-    return NextResponse.json({ message: "Contact section deleted successfully" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Contact section deleted successfully" },
+      { status: 200 }
+    );
   } catch (error: unknown) {
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
-    return NextResponse.json({ error: "An unknown error occurred" }, { status: 500 });
+    return NextResponse.json(
+      { error: "An unknown error occurred" },
+      { status: 500 }
+    );
   }
 }
 
@@ -79,31 +91,71 @@ export async function PUT(
     if (!id) {
       return NextResponse.json({ error: "Missing ID" }, { status: 400 });
     }
+
     const formData = await req.formData();
-    const url = formData.get("url") as string;
-    const image = formData.get("image") as File | null;
 
-    if (!url) {
-      return NextResponse.json({ error: "Please fill all fields" }, { status: 400 });
+    const name = formData.get("name") as string;
+    const techStack = formData.get("techStack") as string;
+    const description = formData.get("description") as string;
+    const profileImage = formData.get("image") as File | null;
+    const resumeFile = formData.get("resumeFile") as File | null;
+
+    const existingData = await HomeModel.findById(id);
+    if (!existingData) {
+      return NextResponse.json({ error: "Data not found" }, { status: 404 });
     }
 
-    const updatedData: Partial<{ url: string; image?: string; cloudinaryId?: string }> = { url };
+    let profileImageUrl = existingData.profileImage;
+    let resumeFileUrl = existingData.resumeFile;
 
-    if (image) {
-      if (!image.type.includes("image")) {
-        return NextResponse.json({ error: "Profile image must be an image file" }, { status: 400 });
+    if (profileImage) {
+      if (!profileImage.type.includes("image")) {
+        return NextResponse.json(
+          { error: "Profile image must be an image file" },
+          { status: 400 }
+        );
       }
-      const contactImage = await UploadImage(image, "home-section");
-      updatedData.image = contactImage.secure_url;
-      updatedData.cloudinaryId = contactImage.public_id;
+      const profileImageResult = await UploadImage(
+        profileImage,
+        "home-section"
+      );
+      profileImageUrl = profileImageResult.secure_url;
     }
 
-    await HomeModel.findByIdAndUpdate(id, updatedData);
-    return NextResponse.json({ message: "Data updated successfully" }, { status: 200 });
+    if (resumeFile) {
+      if (!resumeFile.type.includes("pdf")) {
+        return NextResponse.json(
+          { error: "Resume file must be a PDF" },
+          { status: 400 }
+        );
+      }
+      const resumeFileResult = await UploadImage(resumeFile, "home-section");
+      resumeFileUrl = resumeFileResult.secure_url;
+    }
+
+    const updateData = await HomeModel.findByIdAndUpdate(
+      id,
+      {
+        name,
+        techStack,
+        description,
+        profileImage: profileImageUrl,
+        resumeFile: resumeFileUrl,
+      },
+      { new: true }
+    );
+
+    return NextResponse.json(
+      { message: "Data updated successfully", data: updateData },
+      { status: 200 }
+    );
   } catch (error: unknown) {
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
-    return NextResponse.json({ error: "An unknown error occurred" }, { status: 500 });
+    return NextResponse.json(
+      { error: "An unknown error occurred" },
+      { status: 500 }
+    );
   }
 }

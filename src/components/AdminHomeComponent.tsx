@@ -117,19 +117,7 @@ function AdminHomeComponent() {
     setDeleteLoading(null);
   };
 
-  // Handle file changes
-  // const handleResumeChange = (info: {fileList: File[]}) => {
-  //   if (info.file.type !== "application/pdf") {
-  //     alert("Only PDF files are allowed!");
-  //     return;
-  //   }
-  //   setResumeFile(info.fileList.map((file: any) => file.originFileObj));
-  // };
-
-  // const handleProfileChange = (info: {fileList: File[]}) => {
-  //   setProfileImage(info.fileList.map((file: any) => file.originFileObj));
-  // };
-
+ 
   const handleProfileChange = (info: { fileList: UploadFile[] }) => {
     setProfileImage(info.fileList.map((f) => f.originFileObj as File));
   };

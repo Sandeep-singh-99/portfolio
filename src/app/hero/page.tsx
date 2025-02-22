@@ -5,12 +5,40 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Aos from "aos";
 import "aos/dist/aos.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Typewriter from "typewriter-effect";
+
+interface HomeData {
+  _id: string;
+  name: string;
+  techStack: string[];
+  description: string;
+  profileImage: string;
+  resumeFile: string;
+}
 
 export default function Hero() {
+  const [homeData, setHomeData] = useState<HomeData | null>(null);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch("/api/admin-data/home-section");
+      const data: HomeData[] = await response.json();
+      setHomeData(data.length > 0 ? data[0] : null);
+    } catch (error) {
+      console.error("Failed to fetch home data:", error);
+    }
+  };
+
   useEffect(() => {
     Aos.init({ duration: 1000 });
+    fetchData();
   }, []);
+
+  if (!homeData) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="relative h-screen bg-gray-900 text-white flex items-center justify-center overflow-hidden">
       <motion.div
@@ -40,18 +68,29 @@ export default function Hero() {
         data-aos="fade-up"
       >
         <div>
-          <h1 className="text-4xl md:text-5xl font-semibold">
-            Hi, I am <span className="text-blue-400">Sandeep</span>
+          <h1 className="text-4xl md:text-5xl mb-2 font-semibold">
+            Hi, I am <span className="text-blue-400">{homeData.name}</span>
           </h1>
-          <h2 className="text-2xl font-semibold">Web Developer</h2>
-          <div className="mt-4">
-            <Link href="/about" className="text-blue-400 hover:underline">
-              About me
-            </Link>
-          </div>
-          <button className="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg">
-            Resume
-          </button>
+
+          <h2 className="text-3xl text-blue-400 font-semibold mb-4">
+            <Typewriter
+              options={{
+                strings: homeData.techStack[0].split(","),
+                autoStart: true,
+                loop: true,
+                cursor: "_",
+              }}
+            />
+          </h2>
+
+          <Link
+            href={homeData.resumeFile}
+            target="_blank"
+            rel="noopener noreferrer"
+            className=" bg-gradient-to-r from-gray-800 via-black to-gray-800 border border-slate-500 text-white px-8 py-3 rounded-lg relative overflow-hidden group"
+          >
+            Download Resume
+          </Link>
         </div>
         <motion.div
           className="order-first md:order-none"
@@ -60,7 +99,7 @@ export default function Hero() {
           transition={{ duration: 1 }}
         >
           <Image
-            src="/profile.svg"
+            src={homeData.profileImage}
             alt="profile image"
             width={400}
             height={400}
