@@ -1,18 +1,31 @@
 import { Button, Form, Input, Modal, Upload, Spin, Card } from "antd";
 import React, { useEffect, useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
-import { set } from "mongoose";
+import { UploadFile } from "antd/es/upload/interface";
+import Image from "next/image";
+
+interface ContactItem {
+  _id: string;
+  url: string;
+  image: string;
+}
+
+interface ContactFormValues {
+  url: string;
+  image?: UploadFile[];
+}
+
 
 function AdminContactComponent() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [editing, setEditing] = useState<any>(null);
-  const [contact, setContact] = useState<any>([]);
-  const [contactImage, setContactImage] = useState<any>(null);
+  const [editing, setEditing] = useState<ContactItem | null>(null);
+  const [contact, setContact] = useState<ContactItem[]>([]);
+  const [contactImage, setContactImage] = useState<File[]>([]);
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
   const [form] = Form.useForm();
 
-  const showModal = (item: any = null) => {
+  const showModal = (item: ContactItem | null = null) => {
     setEditing(item);
     setIsModalVisible(true);
     if (item) {
@@ -23,23 +36,34 @@ function AdminContactComponent() {
     }
   };
 
+  // const fetchData = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const response = await fetch("/api/admin-data/contact-section");
+  //     const data = await response.json();
+  //     setContact(data.data);
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //   }
+  //   setLoading(false);
+  // };
+
   const fetchData = async () => {
-    setLoading(true);
     try {
       const response = await fetch("/api/admin-data/contact-section");
-      const data = await response.json();
+      const data: { data: ContactItem[] } = await response.json();
       setContact(data.data);
     } catch (error) {
       console.error("Error:", error);
     }
-    setLoading(false);
   };
+  
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  const handleSubmit = async (value: any) => {
+  const handleSubmit = async (value: ContactFormValues) => {
     setLoading(true);
     const formData = new FormData();
     formData.append("url", value.url);
@@ -57,7 +81,7 @@ function AdminContactComponent() {
         setIsModalVisible(false);
         form.resetFields();
         setContactImage([]);
-        await fetchData()
+        await fetchData();
       }
     } catch (error) {
       console.error("Error:", error);
@@ -88,8 +112,12 @@ function AdminContactComponent() {
     setIsModalVisible(false);
   };
 
-  const handleContactImage = (info: any) => {
-    setContactImage(info.fileList.map((file: any) => file.originFileObj));
+  // const handleContactImage = (info: {fileList: File[]}) => {
+  //   setContactImage(info.fileList.map((file) => file.originFileObj  as File ));
+  // };
+
+  const handleContactImage = (info: { fileList: UploadFile[] }) => {
+    setContactImage(info.fileList.map((file) => file.originFileObj as File));
   };
 
   return (
@@ -134,20 +162,23 @@ function AdminContactComponent() {
           </div>
         ) : contact.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {contact.map((item: any) => (
+            {contact.map((item: ContactItem) => (
               <Card
                 key={item._id}
                 hoverable
                 className="shadow-lg rounded-lg"
                 cover={
-                  <img
-                    alt="example"
+                  <Image
                     src={item.image}
+                    alt="Contact Image"
+                    width={200}
+                    height={200}
                     className="h-48 object-cover rounded-t-lg"
                   />
                 }
                 actions={[
                   <Button
+                    key={"edit"}
                     type="primary"
                     disabled={loading}
                     onClick={() => showModal(item)}
@@ -155,6 +186,7 @@ function AdminContactComponent() {
                     {loading ? <Spin size="small" /> : "Edit"}
                   </Button>,
                   <Button
+                    key={"delete"}
                     type="primary"
                     danger
                     onClick={() => handleDelete(item._id)}

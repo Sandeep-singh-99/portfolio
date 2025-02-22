@@ -14,16 +14,16 @@ export async function POST(req: NextRequest) {
 
         const adminExists = await AdminAuth.findOne({ username });
 
-        if (!adminExists) {
-            return NextResponse.json({ error: "Invalid username or password" }, { status: 400 });
-        }
-
-        if (adminExists.password !== password) {
+        if (!adminExists || adminExists.password !== password) {
             return NextResponse.json({ error: "Invalid username or password" }, { status: 400 });
         }
 
         return NextResponse.json({ message: "Admin logged in successfully" }, { status: 200 });
-    } catch (error) {
-        return NextResponse.json({ error: "Faild to login admin" }, { status: 500 });
+
+    }  catch (error: unknown) {
+        if (error instanceof Error) {
+            return NextResponse.json({ error: error.message }, { status: 500 });
+        }
+        return NextResponse.json({ error: "An unexpected error occurred" }, { status: 500 });
     }
 }

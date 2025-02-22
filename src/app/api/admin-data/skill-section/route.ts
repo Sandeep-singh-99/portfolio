@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     // Upload images to Cloudinary
     const uploadedImages = await Promise.all(
       imageFiles.map(async (file) => {
-        const result: any = await UploadImage(file, "skill");
+        const result = await UploadImage(file, "skill");
         return {
           skillImage: result.secure_url,
           cloudinaryId: result.public_id,
@@ -34,8 +34,14 @@ export async function POST(req: NextRequest) {
       { message: "Skill section created successfully", data: newSkill },
       { status: 201 }
     );
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error) {
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    return NextResponse.json(
+      { error: "An unknown error occurred" },
+      { status: 500 }
+    );
   }
 }
 
@@ -44,7 +50,13 @@ export async function GET() {
   try {
     const skillSections = await SkillModel.find();
     return NextResponse.json(skillSections, { status: 200 });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error) {
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    return NextResponse.json(
+      { error: "An unknown error occurred" },
+      { status: 500 }
+    );
   }
 }

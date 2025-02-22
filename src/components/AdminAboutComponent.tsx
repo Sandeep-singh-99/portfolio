@@ -1,12 +1,16 @@
 import { Button, Form, Input, Modal, Card, Spin } from "antd";
-import { it } from "node:test";
 import React, { useEffect, useState } from "react";
+
+interface AboutSection {
+  _id: string;
+  description: string;
+}
 
 function AdminAboutComponent() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [aboutData, setAboutData] = useState<any>([]);
-  const [editingItem, setEditingItem] = useState<any>(null);
+  const [aboutData, setAboutData] = useState<AboutSection[]>([]);
+  const [editingItem, setEditingItem] = useState<AboutSection | null>(null);
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
   const [form] = Form.useForm();
 
@@ -16,11 +20,11 @@ function AdminAboutComponent() {
   };
 
   // fetch data
-  const fetchData = async () => {
+  const fetchData = async (): Promise<void> => {
     setLoading(true);
     try {
       const response = await fetch("/api/admin-data/about-section");
-      const data = await response.json();
+      const data: AboutSection[] = await response.json();
       setAboutData(data);
     } catch (error) {
       console.error("Failed to fetch data:", error);
@@ -33,7 +37,7 @@ function AdminAboutComponent() {
   }, []);
 
   // Handle submit
-  const handleSubmit = async (value: any) => {
+  const handleSubmit = async (value: {description: string}) => {
     setLoading(true);
     const formData = new FormData();
     formData.append("description", value.description);
@@ -78,7 +82,7 @@ function AdminAboutComponent() {
     setDeleteLoading(null);
   };
 
-  const showModal = (item: any = null) => {
+  const showModal = (item: AboutSection | null = null) => {
     setEditingItem(item);
     setIsModalVisible(true);
     if (item) {
@@ -108,7 +112,7 @@ function AdminAboutComponent() {
             <Spin size="large" className="text-blue-500" />
           </div>
         ) : aboutData.length > 0 ? (
-          aboutData.map((item: any, index: number) => (
+          aboutData.map((item, index) => (
             <Card
               key={index}
               bordered={false}

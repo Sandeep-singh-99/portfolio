@@ -13,6 +13,11 @@ if (!cached) {
     cached = global.mongoose = { conn: null, promise: null };
 }
 
+const uri: string = process.env.MONGODB_URI!;
+if (!uri) {
+  throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
+}
+
 export async function ConnectDB() {
     if (cached.conn) {
         return cached.conn;
@@ -23,7 +28,7 @@ export async function ConnectDB() {
             bufferCommands: false,
             maxPoolSize: 10,
         };
-        cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => mongoose.connection);
+        cached.promise = mongoose.connect(uri, opts).then((mongoose) => mongoose.connection);
     }
 
     try {

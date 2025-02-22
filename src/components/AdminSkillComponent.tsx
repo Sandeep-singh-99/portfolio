@@ -1,7 +1,17 @@
-import { Button, Form, Upload, Modal, Spin, Card, message } from "antd";
+import {
+  Button,
+  Form,
+  Upload,
+  Modal,
+  Spin,
+  Card,
+  message,
+  UploadFile,
+} from "antd";
 import React, { useEffect, useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import Image from "next/image";
+import { RcFile } from "antd/es/upload";
 
 interface SkillImage {
   skillImage: string;
@@ -12,7 +22,6 @@ interface Skill {
   skillName: string;
   skillImages: SkillImage[];
 }
-
 
 function AdminSkillComponent() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -48,18 +57,54 @@ function AdminSkillComponent() {
     fetchData();
   }, []);
 
-  const handleSubmit = async (values: { images?: { fileList?: File[] } }) => {
+  // const handleSubmit = async (values: { images?: { fileList?: File[] } }) => {
+  //   setLoading(true);
+  //   const formData = new FormData();
+
+  //   if (values.images?.fileList) {
+  //     values.images?.fileList.forEach((file: UploadFile<RcFile>) => {
+  //       formData.append("images", file.originFileObj);
+  //     });
+  //   }
+
+  //   const method = "POST";
+  //   const url =  "/api/admin-data/skill-section";
+
+  //   try {
+  //     const response = await fetch(url, { method, body: formData });
+
+  //     if (response.ok) {
+  //       setIsModalVisible(false);
+  //       form.resetFields();
+  //       fetchData();
+  //       message.success("Skill section updated successfully!");
+  //     } else {
+  //       console.error("Failed to submit data:", response.statusText);
+  //       message.error("Failed to submit data!");
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to submit data:", error);
+  //     message.error("An error occurred!");
+  //   }
+  //   setLoading(false);
+  // };
+
+  const handleSubmit = async (values: {
+    images?: { fileList?: UploadFile<RcFile>[] };
+  }) => {
     setLoading(true);
     const formData = new FormData();
 
     if (values.images?.fileList) {
-      values.images.fileList.forEach((file: any) => {
-        formData.append("images", file.originFileObj);
+      values.images.fileList.forEach((file: UploadFile<RcFile>) => {
+        if (file.originFileObj) {
+          formData.append("images", file.originFileObj);
+        }
       });
     }
 
     const method = "POST";
-    const url =  "/api/admin-data/skill-section";
+    const url = "/api/admin-data/skill-section";
 
     try {
       const response = await fetch(url, { method, body: formData });
@@ -80,20 +125,18 @@ function AdminSkillComponent() {
     setLoading(false);
   };
 
-
   const handleDeleteImage = async (skillId: string, imageUrl: string) => {
-    setDeleteLoading(imageUrl); 
+    setDeleteLoading(imageUrl);
     try {
       const response = await fetch(`/api/admin-data/skill-section/${skillId}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ imageUrl }),
       });
-  
+
       if (response.ok) {
-        
         const updatedSkillsData = skillsData
           .map((skill) => {
             if (skill._id === skillId) {
@@ -104,22 +147,21 @@ function AdminSkillComponent() {
             }
             return skill;
           })
-          .filter((skill) => skill.skillImages.length > 0); 
-  
+          .filter((skill) => skill.skillImages.length > 0);
+
         setSkillsData(updatedSkillsData);
         message.success("Image deleted successfully!");
       } else {
         message.error("Failed to delete image!");
       }
-    } catch (error: any) {
-      message.error("An error occurred while deleting the image.", error);
+    } catch (error: unknown) {
+      console.error("An error occurred while deleting the image:", error);
+      message.error("An error occurred while deleting the image.");
     }
-  
-    setDeleteLoading(null); 
+
+    setDeleteLoading(null);
   };
-  
-  
-  
+
   const handleCancel = () => {
     setIsModalVisible(false);
     form.resetFields();
@@ -161,7 +203,7 @@ function AdminSkillComponent() {
             >
               <div className="flex items-center space-x-6">
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-                  {item.skillImages.map((image: any, idx: number) => (
+                  {item.skillImages.map((image: SkillImage, idx: number) => (
                     <div key={idx} className="relative">
                       <Image
                         src={image.skillImage}
@@ -194,7 +236,6 @@ function AdminSkillComponent() {
                     {item.skillName}
                   </h3>
                 </div>
-
               </div>
             </Card>
           ))
@@ -246,11 +287,7 @@ function AdminSkillComponent() {
             className="w-full"
             disabled={loading}
           >
-            {loading ? (
-              <Spin size="small" />
-            ) : (
-              "Submit"
-            )}
+            {loading ? <Spin size="small" /> : "Submit"}
           </Button>
         </Form>
       </Modal>

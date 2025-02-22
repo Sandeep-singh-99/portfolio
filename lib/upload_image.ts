@@ -1,6 +1,35 @@
 import cloudinary from "./cloudinary";
 
-export const UploadImage = async (file: File, folder: string) => {
+interface UploadResponse {
+  secure_url: string;
+  public_id: string;
+}
+
+
+// export const UploadImage = async (file: File, folder: string) => {
+//   const buffer = await file.arrayBuffer();
+//   const bytes = Buffer.from(buffer);
+
+//   return new Promise((resolve, reject) => {
+//     cloudinary.uploader
+//       .upload_stream(
+//         {
+//           resource_type: "auto",
+//           folder: folder,
+//         },
+//         async (error, result) => {
+//           if (error) {
+//             return reject(error);
+//           }
+//           return resolve(result);
+//         }
+//       )
+//       .end(bytes);
+//   });
+// };
+
+
+export const UploadImage = async (file: File, folder: string): Promise<UploadResponse> => {
   const buffer = await file.arrayBuffer();
   const bytes = Buffer.from(buffer);
 
@@ -11,11 +40,12 @@ export const UploadImage = async (file: File, folder: string) => {
           resource_type: "auto",
           folder: folder,
         },
-        async (error, result) => {
+        (error, result) => {
           if (error) {
-            return reject(error);
+            reject(error);
+          } else {
+            resolve(result as UploadResponse); 
           }
-          return resolve(result);
         }
       )
       .end(bytes);

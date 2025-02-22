@@ -28,7 +28,7 @@ function AdminHomeComponent() {
     setLoading(true);
     try {
       const response = await fetch("/api/admin-data/home-section");
-      const data = await response.json();
+      const data: HomeData[] = await response.json();
       setHomeData(data);
     } catch (error) {
       console.error("Failed to fetch home data:", error);
@@ -63,11 +63,16 @@ function AdminHomeComponent() {
   };
 
   // Handle form submission (Add/Update)
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async (values: {
+    name: string;
+    techStack: string[];
+    description: string;
+  }) => {
     setLoading(true);
     const formData = new FormData();
     formData.append("name", values.name);
-    formData.append("techStack", values.techStack);
+    // formData.append("techStack", values.techStack);
+    formData.append("techStack", values.techStack.join(",")); 
     formData.append("description", values.description);
     if (resumeFile.length) formData.append("resumeFile", resumeFile[0]);
     if (profileImage.length) formData.append("image", profileImage[0]);
@@ -129,20 +134,16 @@ function AdminHomeComponent() {
     setProfileImage(info.fileList.map((f) => f.originFileObj as File));
   };
 
+  const handleResumeChange = (info: { fileList: UploadFile[] }) => {
+    const file = info.fileList[0]?.originFileObj as File; 
 
+    if (file && file.type !== "application/pdf") {
+      alert("Only PDF files are allowed!");
+      return;
+    }
 
-const handleResumeChange = (info: { fileList: UploadFile[] }) => {
-  const file = info.fileList[0]?.originFileObj as File; // Ensure correct type
-
-  if (file && file.type !== "application/pdf") {
-    alert("Only PDF files are allowed!");
-    return;
-  }
-
-  setResumeFile(info.fileList.map((f) => f.originFileObj as File));
-};
-
-  
+    setResumeFile(info.fileList.map((f) => f.originFileObj as File));
+  };
 
   return (
     <div className="p-6">
@@ -163,7 +164,7 @@ const handleResumeChange = (info: { fileList: UploadFile[] }) => {
         {loading ? (
           <Spin size="large" className="flex justify-center" />
         ) : homeData.length > 0 ? (
-          homeData.map((item: any, index: number) => (
+          homeData.map((item: HomeData, index: number) => (
             <Card
               key={index}
               bordered={false}
