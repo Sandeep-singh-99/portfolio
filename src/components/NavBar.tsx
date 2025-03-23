@@ -19,9 +19,9 @@ function NavBar() {
   ];
 
   return (
-    <nav className="bg-gray-950 shadow-lg text-white sticky top-0 z-50 transition-all duration-300">
-      <div className="flex justify-between items-center px-5 md:px-10 py-3">
-        <Link href="/" className="text-3xl font-semibold">
+    <nav className="sticky top-0 z-50 bg-gray-950/50 backdrop-blur-md shadow-md text-white transition-all duration-300">
+      <div className="flex justify-between items-center px-6 md:px-12 py-4 max-w-7xl mx-auto">
+        <Link href="/" className="text-3xl font-bold tracking-tight">
           Sandeep
         </Link>
 
@@ -31,7 +31,7 @@ function NavBar() {
             {isMobileMenuOpen ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
+                className="h-7 w-7"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -46,7 +46,7 @@ function NavBar() {
             ) : (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
+                className="h-7 w-7"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -63,27 +63,27 @@ function NavBar() {
 
           {isMobileMenuOpen && (
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
+              initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
+              exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
-              className="bg-gray-800 bg-opacity-90 absolute top-16 right-0 w-44 z-50 py-2 rounded-md shadow-lg backdrop-blur-lg"
+              className="absolute top-16 right-4 w-48 bg-gray-900/80 backdrop-blur-lg rounded-lg shadow-xl py-3"
             >
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-                className="flex flex-col items-center space-y-3 px-2 py-2"
+                transition={{ duration: 0.4 }}
+                className="flex flex-col items-center space-y-2 px-3"
               >
                 {navLinks.map((link) => (
                   <motion.div
                     key={link.href}
-                    whileHover={{ scale: 1.1 }}
+                    whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
                     <Link
                       href={link.href}
-                      className="hover:bg-blue-600 w-full text-center px-4 py-2 rounded-md transition-colors duration-300"
+                      className="block w-full text-center px-4 py-2 text-sm font-medium rounded-md hover:bg-blue-500/80 hover:text-white transition-all duration-300"
                       onClick={toggleMobileMenu}
                     >
                       {link.label}
@@ -96,7 +96,7 @@ function NavBar() {
         </div>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex space-x-3">
+        <div className="hidden md:flex items-center space-x-6">
           {navLinks.map((link) => (
             <motion.div
               key={link.href}
@@ -105,7 +105,7 @@ function NavBar() {
             >
               <Link
                 href={link.href}
-                className="hover:bg-blue-600 px-4 py-2 rounded-md transition-colors duration-300"
+                className="px-4 py-2 text-sm font-medium rounded-md hover:bg-blue-500/50 hover:text-white transition-all duration-300"
               >
                 {link.label}
               </Link>
