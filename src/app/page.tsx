@@ -5,31 +5,34 @@ import About from "./about/page";
 import Skill from "./skill/page";
 import Project from "./project/page";
 import Contact from "./contact/page";
+import Hero from "./hero/page";
 
 import "aos/dist/aos.css";
 import Aos from "aos";
-import Hero from "./hero/page";
 
 export default function Home() {
   useEffect(() => {
-    Aos.init({ duration: 1000 });
+    Aos.init({ duration: 1000 }); 
+    return () => {
+      Aos.refresh(); 
+    };
   }, []);
 
   return (
     <div>
-      <section id="profile">
-        <Hero/>
+      <section id="profile" role="region" aria-label="Profile Section">
+        <Hero />
       </section>
-      <section id="about">
+      <section id="about" role="region" aria-label="About Section">
         <About />
       </section>
-      <section id="skill">
+      <section id="skill" role="region" aria-label="Skills Section">
         <Skill />
       </section>
-      <section id="project">
+      <section id="project" role="region" aria-label="Projects Section">
         <Project />
       </section>
-      <section id="contact">
+      <section id="contact" role="region" aria-label="Contact Section">
         <Contact />
       </section>
     </div>

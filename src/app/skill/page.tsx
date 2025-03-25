@@ -15,14 +15,21 @@ interface Skill {
 
 const Skill = () => {
   const [skillData, setSkillData] = useState<Skill[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchData = async () => {
     try {
+      setIsLoading(true);
       const response = await fetch("/api/admin-data/skill-section");
+      if (!response.ok) throw new Error("Failed to fetch skills");
       const data = await response.json();
       setSkillData(data);
     } catch (error) {
+      setError("Unable to load skills. Please try again later.");
       console.error("Error fetching data: ", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -45,13 +52,21 @@ const Skill = () => {
       y: 0,
       transition: { type: "spring", stiffness: 100, damping: 10 },
     },
-    whileHover: {
+    hover: {
       scale: 1.1,
       y: -5,
-      boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
+      boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.3)",
       transition: { duration: 0.3 },
     },
   };
+
+  if (isLoading) {
+    return <div className="text-center py-10">Loading skills...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-10 text-red-500">{error}</div>;
+  }
 
   return (
     <div className="py-10 px-5 md:px-32 overflow-hidden">
@@ -64,25 +79,25 @@ const Skill = () => {
             variants={container}
             initial="hidden"
             animate="visible"
+            data-aos="fade-up"
+            data-aos-delay="100"
             className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6"
           >
             {skill.skillImages.map((image, index) => (
               <motion.div
                 key={index}
                 variants={item}
-                whileHover="whileHover"
+                whileHover="hover"
                 className="flex flex-col justify-center items-center p-4 rounded-lg 
-               bg-gradient-to-r from-white/10 to-white/30 
-               backdrop-blur-lg shadow-md border border-white/20"
-                data-aos="fade-up"
-                data-aos-delay="100"
+                  bg-gradient-to-r from-white/10 to-white/30 
+                  backdrop-blur-lg shadow-md border border-white/20"
               >
                 <Image
                   src={image.skillImage}
-                  alt={image.skillImage}
+                  alt={`${skill.skillName} icon`}
                   width={70}
                   height={70}
-                  className="mb-2"
+                  className="mb-2 object-contain"
                 />
               </motion.div>
             ))}
